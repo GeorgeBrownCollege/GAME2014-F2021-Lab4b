@@ -18,6 +18,7 @@ public class UIBehaviour : MonoBehaviour
     {
         SceneManager.LoadScene(nextSceneIndex);
     }
+
     public void OnBackButtonPressed()
     {
         SceneManager.LoadScene(previousSceneIndex);
