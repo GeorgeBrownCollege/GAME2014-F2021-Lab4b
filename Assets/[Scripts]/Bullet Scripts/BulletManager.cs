@@ -27,34 +27,24 @@ public class BulletManager
         return instance;
     }
 
-    public Queue<GameObject> enemyBulletPool;
-    public Queue<GameObject> playerBulletPool;
-
-    public int enemyBulletNumber;
-    public int playerBulletNumber;
+    public List<Queue<GameObject>> bulletPools;
 
     // Start is called before the first frame update
     private void Initialize()
     {
-        enemyBulletPool = new Queue<GameObject>(); // creates an empty Queue
-        playerBulletPool = new Queue<GameObject>(); // creates an empty Queue
+        bulletPools = new List<Queue<GameObject>>();
+
+        // create a number of Queue Collections based on the number of bullet types
+        for (int count = 0; count < (int)BulletType.NUMBER_OF_BULLET_TYPES; count++)
+        {
+            bulletPools.Add(new Queue<GameObject>());
+        }
     }
 
     private void AddBullet(BulletType type = BulletType.ENEMY)
     {
         var temp_bullet = BulletFactory.Instance().createBullet(type);
-
-        switch (type)
-        {
-            case BulletType.ENEMY:
-                enemyBulletPool.Enqueue(temp_bullet);
-                enemyBulletNumber++;
-                break;
-            case BulletType.PLAYER:
-                playerBulletPool.Enqueue(temp_bullet);
-                playerBulletNumber++;
-                break;
-        }
+        bulletPools[(int)type].Enqueue(temp_bullet);
     }
 
     /// <summary>
@@ -67,26 +57,12 @@ public class BulletManager
     {
         GameObject temp_bullet = null;
 
-        switch (type)
+        if (bulletPools[(int)type].Count < 1)
         {
-            case BulletType.ENEMY:
-                if (enemyBulletPool.Count < 1)
-                {
-                    AddBullet(type);
-                }
-
-                temp_bullet = enemyBulletPool.Dequeue();
-                break;
-            case BulletType.PLAYER:
-                if (playerBulletPool.Count < 1)
-                {
-                    AddBullet(type);
-                }
-
-                temp_bullet = playerBulletPool.Dequeue();
-                break;
+            AddBullet(type);
         }
 
+        temp_bullet = bulletPools[(int)type].Dequeue();
         temp_bullet.transform.position = spawnPosition;
         temp_bullet.SetActive(true);
         return temp_bullet;
@@ -99,15 +75,6 @@ public class BulletManager
     public void ReturnBullet(GameObject returnedBullet, BulletType type = BulletType.ENEMY)
     {
         returnedBullet.SetActive(false);
-
-        switch (type)
-        {
-            case BulletType.ENEMY:
-                enemyBulletPool.Enqueue(returnedBullet);
-                break;
-            case BulletType.PLAYER:
-                playerBulletPool.Enqueue(returnedBullet);
-                break;
-        }
+        bulletPools[(int)type].Enqueue(returnedBullet);
     }
 }
