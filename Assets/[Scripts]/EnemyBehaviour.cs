@@ -14,14 +14,12 @@ public class EnemyBehaviour : MonoBehaviour
 
     private float startingPoint;
     private float randomSpeed;
-    //private BulletManager bulletManager;
 
     // Start is called before the first frame update
     void Start()
     {
         randomSpeed = Random.Range(movementBounds.min, movementBounds.max);
         startingPoint = Random.Range(startingRange.min, startingRange.max);
-        //bulletManager = GameObject.FindObjectOfType<BulletManager>();
     }
 
     // Update is called once per frame
@@ -34,9 +32,6 @@ public class EnemyBehaviour : MonoBehaviour
     {
         if (Time.frameCount % frameDelay == 0)
         {
-            //var temp_bullet = Instantiate(bulletPrefab);
-            //temp_bullet.transform.position = bulletSpawn.position;
-
             BulletManager.Instance().GetBullet(bulletSpawn.position);
         }
     }
