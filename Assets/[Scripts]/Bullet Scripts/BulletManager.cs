@@ -3,9 +3,30 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
+/* Singleton */
 [System.Serializable]
-public class BulletManager : MonoBehaviour
+public class BulletManager
 {
+    // step 1. create a private static instance
+    private static BulletManager instance = null;
+
+    // step 2. make our default constructor private
+    private BulletManager()
+    {
+        Initialize();
+    }
+
+    // step 3. make a public static creational method for class access
+    public static BulletManager Instance()
+    {
+        if(instance == null)
+        {
+            instance = new BulletManager();
+        }
+
+        return instance;
+    }
+
     public Queue<GameObject> enemyBulletPool;
     public Queue<GameObject> playerBulletPool;
 
@@ -15,12 +36,12 @@ public class BulletManager : MonoBehaviour
     private BulletFactory factory;
 
     // Start is called before the first frame update
-    void Start()
+    private void Initialize()
     {
         enemyBulletPool = new Queue<GameObject>(); // creates an empty Queue
         playerBulletPool = new Queue<GameObject>(); // creates an empty Queue
 
-        factory = GetComponent<BulletFactory>();
+        factory = GameObject.FindObjectOfType<BulletFactory>();
     }
 
     private void AddBullet(BulletType type = BulletType.ENEMY)
